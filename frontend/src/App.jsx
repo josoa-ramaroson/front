@@ -6,9 +6,7 @@ import ChatBotTheEnd from './finalBot/finalBoth'
 import HallDesFins from './hallDesFins/hallDesFins'
 import Mesfins from './mesFins/mesfin'
 import CharacterConfigurator from "./3d/CharacterConfigurator";
-import ResultatEndpage from './endpage/Resultat';
-
-
+import ResultatEndpage from './endpage/ResultatEndpage';
 function App() {
   
   return(<>
