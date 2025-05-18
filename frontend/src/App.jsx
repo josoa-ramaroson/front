@@ -4,15 +4,11 @@ import Inscription from './authentification/inscription'
 import Connexion from './authentification/connexion'
 import ChatBotTheEnd from './finalBot/finalBoth'
 import HallDesFins from './hallDesFins/hallDesFins'
-<<<<<<< HEAD
 import Mesfins from './mesFins/mesfin'
-
 import CharacterConfigurator from "./3d/CharacterConfigurator";
 import ResultatEndpage from './endpage/Resultat';
-=======
 
 
->>>>>>> lady
 function App() {
   
   return(<>

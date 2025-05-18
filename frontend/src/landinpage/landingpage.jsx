@@ -400,12 +400,12 @@ function Landingpage() {
           </div>
           <div className="mt-16 flex justify-center">
             <button className="group relative px-8 py-4 bg-white text-black font-bold xs:text-md md:text-xl rounded-full overflow-hidden transition-all duration-300 hover:bg-black hover:text-black hover:shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-            <span className="relative z-10 flex items-center gap-2">
+            <Link to="/inscription" className="relative z-10 flex items-center gap-2">
               {
                 Traduction("CRÉE TA PAGE DE FIN", "CREATE THE END PAGE","FORONO ARY NY PEJY")
               }
               <ArrowUpRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-            </span>
+            </Link>
             <span className="absolute bottom-0 left-0 w-full h-0  bg-gradient-to-r from-red-500 to-yellow-500 transition-all duration-300 group-hover:h-full -z-0"></span>
           </button>
           </div>

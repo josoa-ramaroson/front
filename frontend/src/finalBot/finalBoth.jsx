@@ -41,9 +41,11 @@ export default function ChatBotTheEnd() {
   const [activeEmoji, setActiveEmoji] = useState(null);
   const messagesEndRef = useRef(null);
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [conversation,setConversation] = useState([])
 
   // Simulating bot typing and response
   const handleSendMessage = (e, content = inputValue.trim()) => {
+
     e.preventDefault();
     if (content === "") return;
 
@@ -55,7 +57,7 @@ export default function ChatBotTheEnd() {
     setIsTyping(true);
 
     const token = localStorage.getItem("token");
-    console.log(token); // Ajustez selon votre gestion d'authentification
+
     axios
       .post(
         `${api}/conversations/create/`,
@@ -63,15 +65,48 @@ export default function ChatBotTheEnd() {
         {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         }
+        
       )
-      .then((res) => {
-        axios.get(`${api}/conversations/`)
-        .then(res=>{console.log(res.data)})
+      .then((res) =>{
+        axios.get(`${api}/conversations/`, 
+        {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+        })
+        .then(res=>{
+          setConversation(res.data)})
+        .catch(err=>console.log(err))
       })
       .catch((err) => {
         console.log(err.response ? err.response.data : err.message);
       });
+
+      
+
+      
   };
+
+  let newMessages = [];
+      conversation.forEach((conversation) => {
+        conversation.messages.forEach((msg, index) => {
+          const messageExists = messages.some((existingMsg) => existingMsg.id === msg.id);
+          if (!messageExists) {
+            newMessages.push({
+              id: msg.id,
+              type: msg.is_from_user ? "user" : "bot",
+              content: msg.content,
+            });
+          }
+        });
+      });
+
+      // Trier les messages par ID pour garantir l'ordre
+      newMessages.sort((a, b) => a.id - b.id);
+
+      if (newMessages.length > 0)
+      {
+        newMessages.length > 0 && setMessages((prevMessages) => [...prevMessages, ...newMessages]);
+        setIsTyping(false);
+    }
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
@@ -89,23 +124,7 @@ export default function ChatBotTheEnd() {
     setDarkMode(!darkMode);
   };
 
-  // Fonction pour obtenir l'icône du type de départ
-  const getExitTypeIcon = (type) => {
-    switch (type) {
-      case "job":
-        return <Briefcase className="h-5 w-5" />;
-      case "relationship":
-        return <Heart className="h-5 w-5" />;
-      case "project":
-        return <Flame className="h-5 w-5" />;
-      case "team":
-        return <Users className="h-5 w-5" />;
-      case "social":
-        return <MessageSquareOff className="h-5 w-5" />;
-      default:
-        return <DoorClosed className="h-5 w-5" />;
-    }
-  };
+  
 
   // Animation pour l'icône du chatbot
   const buttonVariants = {
@@ -253,8 +272,9 @@ export default function ChatBotTheEnd() {
                       }`}
                     >
                       <div className="flex items-center">
-                        <DoorClosed className="mr-2 text-white" size={20} />
-                        <h3 className="font-medium text-white">Assistant TheEnd.page</h3>
+                        <img src=""/>
+                          <img src="https://res.cloudinary.com/dysrhzaib/image/upload/v1747049132/petitRoboto_ycsoda.png" alt="robot" className="w-10 h-10 object-contain" />
+                        <h3 className="font-medium text-white" style={{fontFamily:"Roboto"}}>AssistantEnd</h3>
                       </div>
                       <div className="flex items-center space-x-2">
                         <motion.button
@@ -279,6 +299,7 @@ export default function ChatBotTheEnd() {
                     {/* Chat Messages */}
                     <div
                       className={`flex-grow overflow-y-auto p-4 space-y-4 ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}
+                      style={{fontFamily:"Roboto"}}
                     >
                       {messages.map((message) => (
                         <motion.div
@@ -372,7 +393,7 @@ export default function ChatBotTheEnd() {
                                   : "bg-gradient-to-r from-red-100 to-yellow-100 hover:from-red-200 hover:to-yellow-200 text-red-800"
                               } transition-colors flex items-center shadow-sm`}
                             >
-                              <span>CONSEIL</span>
+                              <span style={{fontFamily:"Inter"}}>CONSEIL</span>
                               <ChevronRight size={14} className="ml-1 opacity-70" />
                             </motion.button>
                             <motion.button
@@ -387,7 +408,7 @@ export default function ChatBotTheEnd() {
                                   : "bg-gradient-to-r from-red-100 to-yellow-100 hover:from-red-200 hover:to-yellow-200 text-red-800"
                               } transition-colors flex items-center shadow-sm`}
                             >
-                              <span>REHABILITATION</span>
+                              <span style={{fontFamily:"Inter"}}>REHABILITATION</span>
                               <ChevronRight size={14} className="ml-1 opacity-70" />
                             </motion.button>
                           </div>
@@ -395,35 +416,6 @@ export default function ChatBotTheEnd() {
                       )}
                     </AnimatePresence>
 
-                    {/* Réactions émoji */}
-                    <div
-                      className={`px-4 py-2 flex justify-center space-x-3 ${
-                        darkMode ? "bg-gray-800 border-t border-gray-700" : "bg-white border-t border-gray-200"
-                      }`}
-                    >
-                      {[
-                        { emoji: <Flame size={18} />, id: "fire", color: "text-red-500" },
-                        { emoji: <Heart size={18} />, id: "heart", color: "text-pink-500" },
-                        { emoji: <Smile size={18} />, id: "smile", color: "text-yellow-500" },
-                        { emoji: <Frown size={18} />, id: "frown", color: "text-blue-500" },
-                      ].map((item) => (
-                        <motion.button
-                          key={item.id}
-                          whileHover={{ scale: 1.2, y: -5 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={() => setActiveEmoji(activeEmoji === item.id ? null : item.id)}
-                          className={`p-2 rounded-full ${
-                            activeEmoji === item.id
-                              ? darkMode
-                                ? "bg-gray-700"
-                                : "bg-gray-200"
-                              : "hover:bg-gray-700/20"
-                          } transition-colors ${item.color}`}
-                        >
-                          {item.emoji}
-                        </motion.button>
-                      ))}
-                    </div>
 
                     {/* Chat Input */}
                     <div

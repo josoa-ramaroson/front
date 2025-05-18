@@ -1,7 +1,7 @@
 "use client"
 import axios from "axios"
 import { api } from "../hooks/api"
-import React, React, { useState, useEffect, useRef, Suspense } from "react"
+import React,  { useState, useEffect, useRef, Suspense } from "react"
 import "./hallDesFins.css"
 import {
   BookOpen,
@@ -23,6 +23,7 @@ import {
   Zap,
   BrainCircuit,
 } from "lucide-react"
+import ChatBotTheEnd from "../finalBot/finalBoth"
 const Ecrire = React.lazy(() => import("../ecrireMaFin/ecrireMaFin"))
 const ApresFin = React.lazy(() => import("../apresFin/apresFin"))
 const DernierFin = React.lazy(() => import("../DernierFin/DernierFin"))

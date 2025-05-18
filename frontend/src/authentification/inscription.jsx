@@ -24,9 +24,7 @@ export default function Inscription() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [recaptchaVerified, setRecaptchaVerified] = useState(false)
-  const [navigation,setNavigation] = useState("")
-  console
-  useNavigate(navigation)
+  const navigate = useNavigate()
   // Fonction de traduction
   const Traduction = (francais, anglais, malagasy) => {
     switch (language) {
@@ -149,8 +147,9 @@ export default function Inscription() {
             gender: "MASCULIN",
           })
           setRecaptchaVerified(false)
+          navigate("/connexion")
         }, 2000)
-        setNavigation("./connexion")
+
       })
       .catch(error=>{console.log(error)})
     }

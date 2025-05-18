@@ -1,11 +1,11 @@
-import React from "react"
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { User, Lock, Mail, Eye, EyeOff, Sun, Moon, Globe, Flame, DoorOpen, ChevronDown, Check, AlertCircle } from "lucide-react"
-import { Link, redirect } from "react-router-dom"
-import axios from "axios"
-import { api } from "../hooks/api"
-import { useNavigate } from "react-router-dom"
+import React from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { User, Lock, Mail, Eye, EyeOff, Sun, Moon, Globe, Flame, DoorOpen, ChevronDown, Check, AlertCircle } from "lucide-react";
+import { Link } from "react-router-dom"; // Removed 'redirect' as it's not needed with useNavigate
+import axios from "axios";
+import { api } from "../hooks/api";
+import { useNavigate } from "react-router-dom";
 
 export default function Connexion() {
   // États
@@ -118,36 +118,6 @@ export default function Connexion() {
     if (validateForm()) {
       setIsSubmitting(true);
 
-      
-
-      axios.post(`${api}/login/`,{email:formData.email, password:formData.password})
-      .then(res=>{
-        localStorage.setItem('token',res.data.access)
-        console.log(localStorage.getItem('token'))
-         useNavigate("./hall")
-         setIsSubmitting(false)
-        setIsSuccess(true)
-        // Réinitialiser le succès après 3 secondes
-         setTimeout(() => {
-          setIsSuccess(false)
-          setFormData({
-            name: "",
-            email: "",
-            password: "",
-            gender: "MASCULIN",
-          })
-          setRecaptchaVerified(false)
-        }, 2000)
-        
-      })
-      .catch(error=>{console.log(error)})
-    }
-  }
-if (localStorage.getItem('token'))
-  {
-          navigation("../hall")
-  }
-
       axios
         .post(`${api}/login/`, { email: formData.email, password: formData.password })
         .then((res) => {
@@ -161,9 +131,10 @@ if (localStorage.getItem('token'))
               email: "",
               password: "",
             });
-            setRecaptchaVerified(false);
-            navigate("/3d-choice"); // Navigate after successful login
+            setRecaptchaVerified(false); 
+            navigate("/3d-choice"); // Navigate to relative path "./hall"
           }, 2000);
+          
         })
         .catch((error) => {
           console.log(error);
@@ -179,13 +150,6 @@ if (localStorage.getItem('token'))
     }
   };
 
-  // Vérifier le token et naviguer si l'utilisateur est déjà connecté
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/3d-choice");
-    }
-  }, [navigate]);
 
   // Charger le script reCAPTCHA
   useEffect(() => {
@@ -205,11 +169,8 @@ if (localStorage.getItem('token'))
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${
-        darkMode ? "bg-white" : "bg-black"
-      }`}
+      className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${darkMode ? "bg-white" : "bg-black"}`}
     >
-      {/* Éléments décoratifs flottants */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute top-20 left-[10%]"
@@ -500,9 +461,7 @@ if (localStorage.getItem('token'))
               <AnimatePresence>
                 {isSuccess && (
                   <motion.div
-                    className={`mt-4 p-3 rounded-lg flex items-center ${
-                      darkMode ? "bg-green-900/50 text-green-200" : "bg-green-100 text-green-800"
-                    }`}
+                    className={`mt-4 p-3 rounded-lg flex items-center ${darkMode ? "bg-green-900/50 text-green-200" : "bg-green-100 text-green-800"}`}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
@@ -550,8 +509,3 @@ if (localStorage.getItem('token'))
     </div>
   );
 }
-
-// Définir la fonction de callback globale pour reCAPTCHA
-window.recaptchaCallback = function (value) {
-  document.dispatchEvent(new CustomEvent("recaptchaChange", { detail: value }));
-};
