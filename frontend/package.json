@@ -10,12 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-spring/three": "^10.0.0",
     "@react-three/drei": "^10.0.7",
     "@react-three/fiber": "^9.1.2",
+    "@react-three/postprocessing": "^3.0.4",
     "axios": "^1.9.0",
     "framer-motion": "^12.12.1",
     "loadash": "^1.0.0",
     "lucide-react": "^0.511.0",
+    "postprocessing": "^6.37.3",
     "react": "^19.1.0",
     "react-confetti": "^6.4.0",
     "react-dom": "^19.1.0",

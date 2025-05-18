@@ -52,12 +52,12 @@ const Interface = () => {
 
       {/* Configurator Panel (Gender Selection) */}
       <motion.div
-        className="fixed inset-x-0 bottom-0 sm:inset-auto sm:top-12 sm:right-5 sm:w-64 w-full p-5 rounded-t-xl sm:rounded-xl shadow-xl ${colors.panel} backdrop-blur-md"
+        className={`z-50 fixed inset-x-0 bottom-4 sm:inset-auto sm:top-12 sm:right-5 sm:w-64 w-full px-5 pb-[env(safe-area-inset-bottom)] pt-5 rounded-t-xl sm:rounded-xl shadow-xl ${colors.panel} backdrop-blur-md`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: animateElements ? 1 : 0, y: animateElements ? 0 : 20 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <div className="space-y-4">
+        <div className="space-y-4 p-4">
           {/* Gender Selection */}
           <div className="space-y-3">
             <div className="flex items-center mb-1">
@@ -134,6 +134,9 @@ const Interface = () => {
       whileHover={{ scale: 1.1, rotate: 5 }}
       whileTap={{ scale: 0.9 }}
       className={`bg-gradient-to-r ${colors.accent} text-white font-semibold px-5 py-2 rounded-xl shadow-lg`}
+      onClick={() => {
+        window.location.href = '/end-page';
+      }}
     >
       Next
     </motion.button>

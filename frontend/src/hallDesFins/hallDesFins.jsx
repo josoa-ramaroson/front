@@ -1,7 +1,7 @@
 "use client"
 import axios from "axios"
 import { api } from "../hooks/api"
-import React, React, { useState, useEffect, useRef, Suspense } from "react"
+import React, { useState, useEffect, useRef, Suspense } from "react"
 import "./hallDesFins.css"
 import {
   BookOpen,
