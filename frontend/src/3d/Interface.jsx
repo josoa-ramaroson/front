@@ -5,11 +5,23 @@ import { useCharacterCustomization } from './CharacterCustomizationContext'
 import { useDarkMode } from './DarkModeContext'
 import { useNavigate } from 'react-router-dom'
 
-const Interface = () => {
+const gestures = [
+  { name: 'angry', label: 'Colère' },
+  { name: 'angry-gesture', label: 'Colère Menaçante' },
+  { name: 'happy', label: 'Joie' },
+  { name: 'crying', label: 'Pleurer' },
+  { name: 'sad', label: 'Triste' },
+  { name: 'idle', label: 'Respirer' },
+  { name: 'punching', label: 'Frapper' },
+  { name: 'thankful', label: 'Gratitude' },
+]
+
+const Interface = ({ animation, setAnimation }) => {
   const { characterMode, setCharacterMode, characterGender, setCharacterGender } = useCharacterCustomization()
   const { darkMode, toggleDarkMode } = useDarkMode()
   const [animateElements, setAnimateElements] = useState(false)
- const navigation = useNavigate()
+  const navigate = useNavigate()
+
   useEffect(() => {
     setAnimateElements(true)
   }, [])
@@ -25,7 +37,7 @@ const Interface = () => {
   }
 
   return (
-    <div className={`transition-colors duration-300 ${colors.text}`}>      
+    <div className={`transition-colors duration-300 ${colors.text}`}>
       {/* Back & Dark Mode Buttons */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
@@ -50,96 +62,119 @@ const Interface = () => {
         </motion.button>
       </motion.div>
 
-      {/* Configurator Panel (Gender Selection) */}
+      {/* Floating Panel */}
       <motion.div
-        className={`z-50 fixed inset-x-0 bottom-4 sm:inset-auto sm:top-12 sm:right-5 sm:w-64 w-full px-5 pb-[env(safe-area-inset-bottom)] pt-5 rounded-t-xl sm:rounded-xl shadow-xl ${colors.panel} backdrop-blur-md`}
+        className={`z-50 fixed inset-x-0 bottom-4 sm:inset-auto sm:top-12 sm:right-5 sm:w-72 w-full px-5 pb-[env(safe-area-inset-bottom)] pt-5 rounded-t-xl sm:rounded-xl shadow-xl ${colors.panel} backdrop-blur-md`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: animateElements ? 1 : 0, y: animateElements ? 0 : 20 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <div className="space-y-4 p-4">
+        <div className="space-y-6">
           {/* Gender Selection */}
-          <div className="space-y-3">
-            <div className="flex items-center mb-1">
+          <div>
+            <div className="flex items-center mb-3">
               <Users className="h-4 w-4 text-purple-500 mr-2" />
-              <span className={`text-sm font-medium ${colors.subtext}`}>Choose Gender</span>
+              <span className={`text-sm font-semibold uppercase tracking-wide ${colors.subtext}`}>
+                Choix du Genre
+              </span>
             </div>
-            <div className="flex gap-3 justify-center">
-              <motion.button
-                onClick={() => setCharacterGender('male')}
-                className={`flex-1 py-2 px-3 rounded-xl font-medium ${
-                  characterGender === 'male'
-                    ? `bg-gradient-to-r ${colors.secondary} text-white`
-                    : `bg-gray-800/80 hover:bg-gray-700/80 text-gray-200`
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Male
-              </motion.button>
-              <motion.button
-                onClick={() => setCharacterGender('female')}
-                className={`flex-1 py-2 px-3 rounded-xl font-medium ${
-                  characterGender === 'female'
-                    ? `bg-gradient-to-r ${colors.accent} text-white`
-                    : `bg-gray-800/80 hover:bg-gray-700/80 text-gray-200`
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Female
-              </motion.button>
+            <div className="flex gap-4">
+              {['male', 'female'].map((gender) => (
+                <motion.button
+                  key={gender}
+                  onClick={() => setCharacterGender(gender)}
+                  className={`w-full py-2 rounded-lg font-medium text-sm transition-all duration-200 shadow-sm ${
+                    characterGender === gender
+                      ? gender === 'male'
+                        ? `bg-gradient-to-r ${colors.secondary} text-white`
+                        : `bg-gradient-to-r ${colors.accent} text-white`
+                      : `${colors.button} ${colors.text} hover:bg-opacity-80`
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {gender === 'male' ? 'Homme' : 'Femme'}
+                </motion.button>
+              ))}
             </div>
           </div>
+
+          {/* Gesture Selection */}
+          <div>
+            <div className="flex items-center mb-3">
+              <Layers className="h-4 w-4 text-purple-500 mr-2" />
+              <span className={`text-sm font-semibold uppercase tracking-wide ${colors.subtext}`}>
+                Tester les gestes
+              </span>
+            </div>
+            <ul className="grid grid-cols-2 gap-3">
+              {gestures.map((gesture) => (
+                <motion.li
+                  key={gesture.name}
+                  onClick={() => setAnimation(gesture.name)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`cursor-pointer px-3 py-2 rounded-lg text-sm text-center font-medium transition-all duration-200 shadow ${
+                    animation === gesture.name
+                      ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white'
+                      : `${colors.button} ${colors.text} hover:ring-1 hover:ring-purple-400`
+                  }`}
+                >
+                  {gesture.label}
+                </motion.li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="h-2" />
         </div>
       </motion.div>
 
+      {/* Bottom Action Buttons */}
       <motion.div
-  className="fixed inset-x-0 bottom-5 z-50 flex items-center justify-between px-4"
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: animateElements ? 1 : 0, y: animateElements ? 0 : 20 }}
-  transition={{ duration: 0.5, delay: 0.3 }}
->
-  {/* Zone gauche vide pour équilibrer */}
-  <div className="w-1/3" />
+        className="fixed inset-x-0 bottom-5 z-50 flex items-center justify-between px-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: animateElements ? 1 : 0, y: animateElements ? 0 : 20 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <div className="w-1/3" />
 
-  {/* Boutons PRO / RELAX centrés */}
-  <div className="w-1/3 flex justify-center space-x-4">
-    <motion.button
-      onClick={() => setCharacterMode('PRO')}
-      className={`py-2 px-4 rounded-xl font-medium bg-gradient-to-r from-green-400 to-blue-500 text-white ${
-        characterMode === 'PRO' ? 'ring-2 ring-offset-2 ring-green-300' : ''
-      }`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      PRO
-    </motion.button>
-    <motion.button
-      onClick={() => setCharacterMode('RELAX')}
-      className={`py-2 px-4 rounded-xl font-medium bg-gradient-to-r from-purple-400 to-pink-500 text-white ${
-        characterMode === 'RELAX' ? 'ring-2 ring-offset-2 ring-purple-300' : ''
-      }`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      RELAX
-    </motion.button>
-  </div>
+        <div className="w-1/3 flex justify-center space-x-4">
+          <motion.button
+            onClick={() => setCharacterMode('PRO')}
+            className={`py-2 px-4 rounded-xl font-medium bg-gradient-to-r from-green-400 to-blue-500 text-white ${
+              characterMode === 'PRO' ? 'ring-2 ring-offset-2 ring-green-300' : ''
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            PRO
+          </motion.button>
+          <motion.button
+            onClick={() => setCharacterMode('RELAX')}
+            className={`py-2 px-4 rounded-xl font-medium bg-gradient-to-r from-purple-400 to-pink-500 text-white ${
+              characterMode === 'RELAX' ? 'ring-2 ring-offset-2 ring-purple-300' : ''
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            RELAX
+          </motion.button>
+        </div>
 
-  {/* Bouton Next aligné à droite */}
-  <div className="w-1/3 flex justify-end">
-    <motion.button
-      // onClick={()=>{navigation("/hall")}}
-      whileHover={{ scale: 1.1, rotate: 5 }}
-      whileTap={{ scale: 0.9 }}
-      className={`bg-gradient-to-r ${colors.accent} text-white font-semibold px-5 py-2 rounded-xl shadow-lg`}
-    >
-      Next
-    </motion.button>
-  </div>
-</motion.div>
-
+        <div className="w-1/3 flex justify-end">
+          <motion.button
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            whileTap={{ scale: 0.9 }}
+            className={`bg-gradient-to-r ${colors.accent} text-white font-semibold px-5 py-2 rounded-xl shadow-lg`}
+            onClick={() => {
+              navigate('/end-page')
+            }}
+          >
+            Next
+          </motion.button>
+        </div>
+      </motion.div>
     </div>
   )
 }

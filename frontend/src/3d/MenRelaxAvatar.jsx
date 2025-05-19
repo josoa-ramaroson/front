@@ -1,28 +1,57 @@
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useAnimations, useGLTF } from '@react-three/drei'
+import { FacialExpressions } from './FacialExpressions';
+// Apply expression helper
+function applyFacialExpression(skinnedMesh, expression) {
+  const influences = skinnedMesh.morphTargetInfluences;
+  const dictionary = skinnedMesh.morphTargetDictionary;
 
-export function MenRelaxAvatar(props) {
+  Object.values(dictionary).forEach((value) => {
+    influences[value] = 0;
+  });
+  Object.entries(expression).forEach(([key, value]) => {
+    const idx = dictionary[key]
+    if (idx !== undefined && influences[idx] !== undefined) {
+      influences[idx] = value
+    }
+  })
+}
+export function MenRelaxAvatar({ animation = "angry"}) {
   const { nodes, materials } = useGLTF('/men-relax.glb');
-  const { animationFile } = props;
-
-  console.log(animationFile);
   const group = useRef();
   const { animations } = useGLTF('/man-animation.glb')
       // Setup animation actions
-      const { actions } = useAnimations(animations, group)
-    
-      useEffect(() => {
-        // Ensure the idle animation exists before playing
-        const idleAction = actions['idle']
-        if (idleAction) {
-          idleAction.reset()
-          idleAction.play()
-        }
-      }, [actions])
+  const { actions } = useAnimations(animations, group)
 
+  // Play and switch animation with corresponding facial expression
+    useEffect(() => {
+      // stop all
+      Object.values(actions).forEach(a => a.stop())
+      const action = actions[animation]
+      if (action) {
+        action.reset().fadeIn(0.4).play();
+        const expr = FacialExpressions[animation] || {}
+        applyFacialExpression(nodes.Wolf3D_Head, expr)
+        applyFacialExpression(nodes.EyeLeft, expr)
+        applyFacialExpression(nodes.EyeRight, expr)
+      }
+    }, [actions, animation, nodes])
+
+    useEffect(() => {
+      console.log("man relax")
+
+      console.log(nodes.EyeLeft.morphTargetDictionary);
+      console.log(nodes.EyeLeft.morphTargetInfluences);
+
+      console.log(nodes.EyeRight.morphTargetDictionary);
+      console.log(nodes.EyeRight.morphTargetInfluences);
+
+      console.log(nodes.Wolf3D_Head.morphTargetDictionary);
+      console.log(nodes.Wolf3D_Head.morphTargetInfluences);
+    }, []);
   return (
-    <group {...props} ref={group} dispose={null} position-y={-1}>
+    <group  ref={group} dispose={null} position-y={-1}>
       <skinnedMesh
         name="EyeLeft"
         geometry={nodes.EyeLeft.geometry}

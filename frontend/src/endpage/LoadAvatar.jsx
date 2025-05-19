@@ -3,10 +3,15 @@ import { MenProAvatar } from '../3d/MenProAvatar'
 import { WomanProAvatar } from '../3d/WomanProAvatar'
 import { MenRelaxAvatar } from '../3d/MenRelaxAvatar'
 import { WomanRelaxAvatar } from '../3d/WomanRelaxAvatar'
-import { getAnimationForEmotion } from './EmotionToAnimationMap'
 
-export default function LoadAvatar({ gender, mode, expression }) {
- let AvatarComponent = null
+/**
+ * Avatar component
+ * Renders the correct avatar based on global characterMode and characterGender.
+ */
+export default function LoadAvatar({animation="idle", gender="male", mode="pro", ...props}) {
+  // const { animation } = props;
+  // Determine which avatar to render
+  let AvatarComponent = null
   if (mode === 'PRO') {
     AvatarComponent = gender === 'male' ? MenProAvatar : WomanProAvatar
   } else if (mode === 'RELAX') {
@@ -14,8 +19,8 @@ export default function LoadAvatar({ gender, mode, expression }) {
   }
 
   return (
-    <group >
-      {AvatarComponent && <AvatarComponent  animation={getAnimationForEmotion(expression)}/>}
+    <group {...props}>
+      {AvatarComponent && <AvatarComponent animation={animation} />}
     </group>
   )
 }

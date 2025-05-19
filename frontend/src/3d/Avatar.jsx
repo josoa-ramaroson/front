@@ -9,9 +9,9 @@ import { WomanRelaxAvatar } from './WomanRelaxAvatar'
  * Avatar component
  * Renders the correct avatar based on global characterMode and characterGender.
  */
-export default function Avatar(props) {
+export default function Avatar({animation, ...props}) {
   const { characterMode, characterGender } = useCharacterCustomization()
-
+  // const { animation } = props;
   // Determine which avatar to render
   let AvatarComponent = null
   if (characterMode === 'PRO') {
@@ -22,7 +22,7 @@ export default function Avatar(props) {
 
   return (
     <group {...props}>
-      {AvatarComponent && <AvatarComponent />}
+      {AvatarComponent && <AvatarComponent animation={animation} />}
     </group>
   )
 }

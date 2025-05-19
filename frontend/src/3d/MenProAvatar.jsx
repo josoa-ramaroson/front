@@ -1,8 +1,23 @@
 
 import React, { useEffect, useRef } from 'react'
 import { useAnimations, useGLTF } from '@react-three/drei'
+import { FacialExpressions } from './FacialExpressions'
+// Apply expression helper
+function applyFacialExpression(skinnedMesh, expression) {
+  const influences = skinnedMesh.morphTargetInfluences;
+  const dictionary = skinnedMesh.morphTargetDictionary;
 
-export function MenProAvatar(props) {
+  Object.values(dictionary).forEach((value) => {
+    influences[value] = 0;
+  });
+  Object.entries(expression).forEach(([key, value]) => {
+    const idx = dictionary[key]
+    if (idx !== undefined && influences[idx] !== undefined) {
+      influences[idx] = value
+    }
+  })
+}
+export function MenProAvatar({animation, ...props}) {
   const { nodes, materials } = useGLTF('/men20to30.glb')
   
   const group = useRef()
@@ -12,15 +27,30 @@ export function MenProAvatar(props) {
       // Setup animation actions
       const { actions } = useAnimations(animations, group)
     
+       // Play and switch animation with corresponding facial expression
       useEffect(() => {
-        // Ensure the idle animation exists before playing
-        const idleAction = actions['idle']
-        if (idleAction) {
-          idleAction.reset()
-          idleAction.play()
+        // stop all
+        Object.values(actions).forEach(a => a.stop())
+        const action = actions[animation]
+        if (action) {
+          action.reset().fadeIn(0.4).play();
+          const expr = FacialExpressions[animation] || {}
+          applyFacialExpression(nodes.Wolf3D_Head, expr)
+          applyFacialExpression(nodes.EyeLeft, expr)
+          applyFacialExpression(nodes.EyeRight, expr)
         }
-      }, [actions])
+      }, [actions, animation, nodes])
+     useEffect(() => {
+      console.log("man pro")
+          console.log(nodes.EyeLeft.morphTargetDictionary);
+          console.log(nodes.EyeLeft.morphTargetInfluences);
     
+          console.log(nodes.EyeRight.morphTargetDictionary);
+          console.log(nodes.EyeRight.morphTargetInfluences);
+    
+          console.log(nodes.Wolf3D_Head.morphTargetDictionary);
+          console.log(nodes.Wolf3D_Head.morphTargetInfluences);
+        }, []);
   return (
     <group {...props} ref={group} dispose={null} position-y={-1}>
       <primitive object={nodes.Hips} />

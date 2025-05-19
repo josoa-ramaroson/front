@@ -1,4 +1,4 @@
-import React, { Suspense, useRef } from 'react'
+import React, { Suspense, useRef, useState } from 'react'
 import { CharacterCustomizationProvider } from './CharacterCustomizationContext'
 import { Canvas, useFrame } from '@react-three/fiber'
 import Interface from './Interface'
@@ -10,6 +10,7 @@ import { Environment, Sky, Text } from '@react-three/drei'
 
 
 export default function CharacterConfigurator() {
+  const [animation, setAnimation] = useState("idle")
   return (
     <CharacterCustomizationProvider>
       <CharacterAnimationsProvider>
@@ -38,10 +39,10 @@ export default function CharacterConfigurator() {
                     <Suspense fallback={
                         <LoadingFallback />
                     } >
-                       <Avatar /> 
+                       <Avatar animation={animation}/> 
                     </Suspense>
                 </Canvas>
-                <Interface />
+                <Interface animation={animation} setAnimation={setAnimation}/>
             </div>
             </DarkModeProvider>
         </CharacterAnimationsProvider>
