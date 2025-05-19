@@ -117,15 +117,19 @@ const morphTargetIndices = {
 
 // Apply expression helper
 function applyFacialExpression(skinnedMesh, expression) {
-  const influences = skinnedMesh.morphTargetInfluences
+  const influences = skinnedMesh.morphTargetInfluences;
+  const dictionary = skinnedMesh.morphTargetDictionary;
+
+  Object.values(dictionary).forEach((value) => {
+    influences[value] = 0;
+  });
   Object.entries(expression).forEach(([key, value]) => {
-    const idx = morphTargetIndices[key]
+    const idx = dictionary[key]
     if (idx !== undefined && influences[idx] !== undefined) {
       influences[idx] = value
     }
   })
 }
-
 export function WomanRelaxAvatar({ animation = 'angry-gesture', ...props }) {
   const group = useRef()
   const { nodes, materials } = useGLTF('/women-relax.glb')
@@ -138,7 +142,7 @@ export function WomanRelaxAvatar({ animation = 'angry-gesture', ...props }) {
     Object.values(actions).forEach(a => a.stop())
     const action = actions[animation]
     if (action) {
-      action.reset().play()
+      action.reset().fadeIn(0.4).play();
       const expr = FacialExpressions[animation] || {}
       applyFacialExpression(nodes.Wolf3D_Head, expr)
       applyFacialExpression(nodes.EyeLeft, expr)
@@ -154,8 +158,8 @@ export function WomanRelaxAvatar({ animation = 'angry-gesture', ...props }) {
         geometry={nodes.EyeLeft.geometry}
         material={materials.Wolf3D_Eye}
         skeleton={nodes.EyeLeft.skeleton}
-        morphTargetDictionary={nodes.EyeLeft.morphTargetDictionary}
-        morphTargetInfluences={nodes.EyeLeft.morphTargetInfluences}
+        morphTargetDictionary={nodes.EyeRight.morphTargetDictionary}
+        morphTargetInfluences={nodes.EyeRight.morphTargetInfluences}
       />
       <skinnedMesh
         name="EyeRight"
@@ -170,8 +174,8 @@ export function WomanRelaxAvatar({ animation = 'angry-gesture', ...props }) {
         geometry={nodes.Wolf3D_Head.geometry}
         material={materials.Wolf3D_Skin}
         skeleton={nodes.Wolf3D_Head.skeleton}
-        morphTargetDictionary={nodes.Wolf3D_Head.morphTargetDictionary}
-        morphTargetInfluences={nodes.Wolf3D_Head.morphTargetInfluences}
+        morphTargetDictionary={nodes.EyeRight.morphTargetDictionary}
+        morphTargetInfluences={nodes.EyeRight.morphTargetInfluences}
       />
       <skinnedMesh
         name="Wolf3D_Teeth"
