@@ -132,7 +132,7 @@ export default function Connexion() {
               password: "",
             });
             setRecaptchaVerified(false); 
-            navigate("/3d-choice"); // Navigate to relative path "./hall"
+            navigate("/hall"); // Navigate to relative path "./hall"
           }, 2000);
           
         })

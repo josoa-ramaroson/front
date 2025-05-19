@@ -5,7 +5,7 @@ function ApresFin(){
 
        <div>
             <div className="chatbot-container">
-                <ChatBotTheEnd />
+              
             </div>
        </div>
     );

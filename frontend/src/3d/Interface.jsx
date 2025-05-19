@@ -130,13 +130,10 @@ const Interface = () => {
   {/* Bouton Next aligné à droite */}
   <div className="w-1/3 flex justify-end">
     <motion.button
-    onClick={()=>{navigation("/hall")}}
+      // onClick={()=>{navigation("/hall")}}
       whileHover={{ scale: 1.1, rotate: 5 }}
       whileTap={{ scale: 0.9 }}
       className={`bg-gradient-to-r ${colors.accent} text-white font-semibold px-5 py-2 rounded-xl shadow-lg`}
-      onClick={() => {
-        window.location.href = '/end-page';
-      }}
     >
       Next
     </motion.button>
